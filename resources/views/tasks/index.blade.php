@@ -10,7 +10,8 @@
                         <div class="card-header"><strong>{{$task->title}}</strong></div>
 
                         <div class="card-body">
-                            {{$task->content}}
+                            {{--{{var_dump($task)}}--}}
+                            {{$task->task_content}}
                         </div>
                         <div class="card-footer">
                             <a href="tasks/{{$task->id}}">Placiau</a>

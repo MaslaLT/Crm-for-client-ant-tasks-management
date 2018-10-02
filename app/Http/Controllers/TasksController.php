@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Tasks;
+use App\Status;
 
 class TasksController extends Controller
 {
@@ -25,7 +26,8 @@ class TasksController extends Controller
      */
     public function create()
     {
-        return view('tasks.create');
+        $statuses = Status::all();
+        return view('tasks.create')->with('statuses', $statuses);
     }
 
     /**
@@ -38,7 +40,7 @@ class TasksController extends Controller
     {
         $task = new Tasks();
         $task->title = $request->title;
-        $task->content = $request->taskContent;
+        $task->task_content = $request->task_content;
         $task->status_id = 1;
         $task->priority_id = 1;
         $task->client_id = 1;
@@ -74,7 +76,9 @@ class TasksController extends Controller
      */
     public function edit($id)
     {
-        echo 'Task edited';
+        $data['task'] = Tasks::find($id);
+        $data['statuses'] = Status::all();
+        return view('tasks.edit', $data);
     }
 
     /**
@@ -86,7 +90,13 @@ class TasksController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        Tasks::where('id',$id)->update([
+            'title' => $request->title,
+            'status_id' => $request->status,
+            'task_content' => $request->task_content,
+            'start_date' => $request->start_date
+        ]);
+        return redirect(route('tasks.show', $id));
     }
 
     /**

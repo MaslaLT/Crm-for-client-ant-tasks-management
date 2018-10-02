@@ -8,11 +8,7 @@
                 @csrf
                 <button class="btn btn-danger">Delete task</button>
             </form>
-            <form action="{{ route('tasks.edit', $task->id) }}" method="POST">
-                @method('GET|HEAD')
-                @csrf
-                <button class="btn btn-warning">Edit task</button>
-            </form>
+            <a href="{{route('tasks.edit', $task->id)}}"><button class="btn btn-warning">Edit task</button></a>
             <div class="col-md-10">
                 <div class="card">
                     <div class="card-body">
@@ -23,14 +19,14 @@
                     <div class="card-body">
                         <b class="text-danger">Content:</b>
                         <br>
-                        {{$task->content}}
+                        {{$task->task_content}}
                     </div>
                     <hr>
                     <div class="d-flex flex-row justify-content-around">
                         <div class="d-flex flex-column">
                             <div class="card-body">
-                                <b class="text-danger">Status_id = </b>
-                                {{$task->status_id}}
+                                <b class="text-danger">Status = </b>
+                                {{$task->status->name}}
                             </div>
                             <div class="card-body">
                                 <b class="text-danger">Priority_id = </b>
@@ -44,8 +40,8 @@
                                 <b class="text-danger">Client_id = </b>
                                 {{$task->client_id}}
                             </div>
-                            <div class="card-body"><b class="text-danger">Project_id = </b>
-                                {{$task->project_id}}
+                            <div class="card-body"><b class="text-danger">Project Name = </b>
+                                {{$task->project->name}}
                             </div>
                             <div class="card-body"><b class="text-danger">Estimated_time = </b>
                                 {{$task->estimated_time}} min

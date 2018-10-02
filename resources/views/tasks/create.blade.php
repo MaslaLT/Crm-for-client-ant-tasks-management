@@ -32,6 +32,15 @@
                                         <input class="form-control" type="number" name="estimated_time" placeholder="Estimated time"/>
                                     </div>
                                 </div>
+                                <div class="form-row">
+                                    <div class="col">
+                                        <select name="status">
+                                            @foreach($statuses as $status)
+                                                <option value="{{$status->id}}">{{$status->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
                                 <br/>
                             <button class="btn btn-success">Create Task</button>
                         </form>
