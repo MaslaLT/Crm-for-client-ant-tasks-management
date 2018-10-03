@@ -14,7 +14,7 @@
                                     <input class="form-control" type="text" name="title" placeholder="Title"/>
                                 </div>
                                 <div class="form-group">
-                                    <textarea class="form-control" name="taskContent" placeholder="Content"></textarea>
+                                    <textarea class="form-control" name="task_content" placeholder="Content"></textarea>
                                 </div>
                                 <div class="form-row">
                                     <div class="col">

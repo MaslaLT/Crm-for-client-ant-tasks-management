@@ -20,5 +20,6 @@ Auth::routes();
 Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 
 Route::resources([
-    '/tasks' => 'TasksController'
+    '/tasks' => 'TasksController',
+    '/projects' => 'ProjectsController'
 ]);
