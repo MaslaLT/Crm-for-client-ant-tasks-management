@@ -5,6 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Tasks;
 use App\Status;
+use App\Priority;
+use App\Projects;
+use App\User;
+use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+
 
 class TasksController extends Controller
 {
@@ -15,8 +22,20 @@ class TasksController extends Controller
      */
     public function index()
     {
-        $tasks = Tasks::paginate(7);
-        return view('tasks.index')->with('tasks', $tasks);
+        $user = Auth::user();
+        $userId = auth::id();
+
+        if($user->hasRole('client')){
+            $data['tasks'] = Tasks::where('active', 1)->where('client_id', $userId)->paginate(7);
+            return view('tasks.index', $data);
+        } else {
+            $data['tasks'] = Tasks::where('active', 1)->paginate(7);
+            return view('tasks.index', $data);
+        }
+
+
+//    $tasks = Tasks::paginate(7);
+//    return view('tasks.index')->with('tasks', $tasks);
     }
 
     /**
@@ -26,8 +45,11 @@ class TasksController extends Controller
      */
     public function create()
     {
-        $statuses = Status::all();
-        return view('tasks.create')->with('statuses', $statuses);
+
+        $data['statuses'] = Status::all();
+        $data['priorities'] = Priority::all();
+        $data['projects'] = Projects::all();
+        return view('tasks.create', $data);
     }
 
     /**
@@ -38,20 +60,23 @@ class TasksController extends Controller
      */
     public function store(Request $request)
     {
+        $connectedUser = auth::id();
+
         $task = new Tasks();
         $task->title = $request->title;
         $task->task_content = $request->task_content;
-        $task->status_id = 1;
-        $task->priority_id = 1;
-        $task->client_id = 1;
-        $task->author_id = 1;
-        $task->project_id = 1;
+        $task->status_id = $request->status;
+        $task->priority_id = $request->priority;
+        $task->author_id = $connectedUser;
+        $task->project_id = $request->project;
+        $task->client_id = Projects::find($task->project_id)->client->id;
         $task->estimated_time = $request->estimated_time;
         $task->spent_time = 0;
         $task->billing_time = 0;
         $task->start_date = $request->start_date;
         $task->deadline_date = $request->deadline_date;
         $task->fixed_rate = $request->fixed_rate;
+        $task->active = 1;
         $task->save();
         return redirect('tasks');
     }
@@ -76,9 +101,13 @@ class TasksController extends Controller
      */
     public function edit($id)
     {
-        $data['task'] = Tasks::find($id);
-        $data['statuses'] = Status::all();
-        return view('tasks.edit', $data);
+        $user = Auth::user();
+
+       if($user->can('edit task')) {
+           $data['task'] = Tasks::find($id);
+           $data['statuses'] = Status::all();
+           return view('tasks.edit', $data);
+       }
     }
 
     /**
@@ -107,7 +136,14 @@ class TasksController extends Controller
      */
     public function destroy($id)
     {
-        Tasks::destroy($id);
-        return redirect('tasks');
+        $user = Auth::user();
+
+        if($user->can('delete task')) {
+            Tasks::where('id',$id)->update([
+                'active' => 0
+            ]);
+
+            return redirect('tasks');
+        }
     }
 }

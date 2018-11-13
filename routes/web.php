@@ -17,9 +17,13 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 
-Route::resources([
-    '/tasks' => 'TasksController',
-    '/projects' => 'ProjectsController'
-]);
+    Route::resources([
+        '/tasks' => 'TasksController',
+        '/projects' => 'ProjectsController'
+    ]);
+
+    Route::post('comments/store','CommentsController@store')->name('comments.store');
+});

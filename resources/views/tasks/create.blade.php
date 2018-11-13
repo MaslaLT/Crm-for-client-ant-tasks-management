@@ -18,26 +18,48 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="col">
-                                        <label>Start Date:</label> <input type="date" name="start_date">
+                                        <label>Start Date:</label> <input type="date" name="start_date" value="{{date('Y-m-d')}}">
                                     </div>
                                     <div class="col">
-                                        <label>Deadline:</label> <input type="date" name="dedline_date">
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="col">
-                                        <input class="form-control" type="number" name="fixed_rate" placeholder="Rate"/>
-                                    </div>
-                                    <div class="col">
-                                        <input class="form-control" type="number" name="estimated_time" placeholder="Estimated time"/>
+                                        <label>Deadline:</label> <input type="date" name="dedline_date" value="{{date('Y-m-d')}}">
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="col">
+                                        <input class="form-control" type="number" name="fixed_rate" placeholder="Rate in Eu"/>
+                                    </div>
+                                    <div class="col">
+                                        <input class="form-control" type="number" name="estimated_time" placeholder="Estimated time in MINUTES"/>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col">
+                                        <label>Status</label>
                                         <select name="status">
                                             @foreach($statuses as $status)
                                                 <option value="{{$status->id}}">{{$status->name}}</option>
                                             @endforeach
+                                        </select>
+                                        <label>Priority</label>
+                                        <select name="priority">
+                                            @foreach($priorities as $priority)
+                                                <option value="{{$priority->id}}">{{$priority->name}}</option>
+                                            @endforeach
+                                        </select>
+                                        <label>Project</label>
+                                        <select name="project">
+                                            @if(!empty($_GET['project']))
+                                                {{$selectedId = $_GET['project']}}
+                                                @foreach($projects as $project)
+                                                    @if($project->id == $_GET['project'])
+                                                        <option selected value="{{$project->id}}">{{$project->name}}</option>
+                                                    @endif
+                                                @endforeach
+                                            @else
+                                                @foreach($projects as $project)
+                                                    <option value="{{$project->id}}">{{$project->name}}</option>
+                                                @endforeach
+                                            @endif
                                         </select>
                                     </div>
                                 </div>
