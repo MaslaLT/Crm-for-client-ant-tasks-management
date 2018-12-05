@@ -7,7 +7,14 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex justify-content-between">
-                            <b class="text-danger">Title:</b>
+
+                            <div>
+                                <b class="text-danger">Title:</b>
+                                <span>
+                                    {{$task->title}}
+                                </span>
+                            </div>
+
                             <div class="d-flex">
                                 <div class="mx-1">
                                     <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="collapse"
@@ -41,28 +48,67 @@
                                 </div>
                             </form>
                         @endcan
-                        <div class="d-block">
-                            {{$task->title}}
-                        </div>
                     </div>
+
                     <div class="card-body">
                         <b class="text-danger">Content:</b>
                         <br>
-                        {{$task->task_content}}
+                            {!!trim($task->task_content, '"')!!}
                     </div>
-                    <div class="card-body d-flex flex-row justify-content-around">
-                        <div class="d-flex flex-column">
-                            <div class="card-body">
-                                <b class="text-danger">Status = </b>
-                                {{$task->status->name}}
+
+                    <div class="card-footer px-1 py-2">
+                        <div class="container-fluid">
+                            <div class="row small">
+                                <div class="col">
+                                    <b>Started</b>
+                                    {{substr(ucfirst($task->start_date), 0, 10)}}
+                                </div>
+                                <div class="col">
+                                    <b>Deadline</b>
+                                    {{substr(ucfirst($task->deadline_date), 0, 10)}}
+                                </div>
+                                <div class="col">
+                                    <b>Billing time</b>
+                                    {{ucfirst($task->billing_time)}}
+                                </div>
+                            </div>
+
+                            <div class="row small">
+                                <div class="col">
+                                    <b>Status </b>
+                                    {{ucfirst($task->status->name)}}
+                                </div>
+                                <div class="col">
+                                    <b>Priority </b>
+                                    {{ucfirst($task->priority->name)}}
+                                </div>
+                                <div class="col">
+                                    <b>Created by </b>
+                                    {{ucfirst($task->user->name)}}
+                                </div>
+                            </div>
+
+                            <div class="row small">
+                                <div class="col">
+                                    <b>Time to complete </b>
+                                    {{ucfirst($task->estimated_time)}}
+                                </div>
+                                <div class="col">
+                                    <b>Time spent </b>
+                                    {{ucfirst($task->spent_time)}}
+                                </div>
+                                <div class="col">
+                                    <b>Rate</b>
+                                    {{ucfirst($task->fixed_rate . '$')}}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-6">
-                <h6 class="lead pb-2 mb-0">Comments</h6>
+            <div class="col-md-6 p-2">
+                <h6 class="lead pb-2 mb-0 mt-2">Comments</h6>
                 @foreach($task->comments as $comment)
                     @if($comment->active = 1)
                         <div class="d-flex mt-1 justify-content-between border-top border-gray">
@@ -71,15 +117,15 @@
                                 <strong class="text-muted text-gray-dark">{{$task->user->name}}</strong>
                             </div>
                             @if(Auth::id() == $comment->author_id ||Auth::id == Auth::user()->hasRole('administrator'))
-                            <div>
-                                <i class="text-secondary far fa-edit"></i>
-                                <i class="text-secondary far fa-trash-alt"></i>
-                            </div>
+                                <div>
+                                    <i id="editComentButton" class="text-secondary far fa-edit"></i>
+                                    <i id="deleteComentButton" class="text-secondary far fa-trash-alt"></i>
+                                </div>
                             @endif
                         </div>
                         <div class="pt-3 mb-4">
                             <p class="pb-1 mb-0 small lh-125">
-                                {{$comment->content}}
+                                {!! trim($comment->content, ' ') !!}
                             </p>
                             <div class="small">
                                 <div class="text-right">
@@ -94,18 +140,30 @@
                         data-target="#dataTargetCollapse" aria-expanded="false" aria-controls="dataTargetCollapse">
                     New comment
                 </button>
+
                 <div class="collapse" id="dataTargetCollapse">
                     <div class="alert alert-success">
                         <form class="form-group" action="{{route('comments.store')}}" method="POST">
                             @method('POST')
                             @csrf
-                            <textarea class="form-control col-12" rows="5" name="comment_content" placeholder="Type in your comment"></textarea>
+                            <textarea class="form-control col-12" id="ContentSummernote"
+                                      name="comment_content" placeholder="Type in your comment"></textarea>
                             <input type="hidden" name="task_id" value="{{$task->id}}">
                             <button class="btn btn-info"  type="submit">Post Comment</button>
                         </form>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#deleteComentButton").on("click", function(){
+                alert("Hello");
+            });
+        });
+    </script>
+
 @endsection

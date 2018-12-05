@@ -34,8 +34,6 @@ class TasksController extends Controller
         }
 
 
-//    $tasks = Tasks::paginate(7);
-//    return view('tasks.index')->with('tasks', $tasks);
     }
 
     /**
@@ -63,12 +61,12 @@ class TasksController extends Controller
         $connectedUser = auth::id();
 
         $task = new Tasks();
+        $task->project_id = $request->project;
         $task->title = $request->title;
         $task->task_content = $request->task_content;
         $task->status_id = $request->status;
         $task->priority_id = $request->priority;
         $task->author_id = $connectedUser;
-        $task->project_id = $request->project;
         $task->client_id = Projects::find($task->project_id)->client->id;
         $task->estimated_time = $request->estimated_time;
         $task->spent_time = 0;
@@ -106,6 +104,7 @@ class TasksController extends Controller
        if($user->can('edit task')) {
            $data['task'] = Tasks::find($id);
            $data['statuses'] = Status::all();
+           $data['priorities'] = Priority::all();
            return view('tasks.edit', $data);
        }
     }
@@ -123,7 +122,13 @@ class TasksController extends Controller
             'title' => $request->title,
             'status_id' => $request->status,
             'task_content' => $request->task_content,
-            'start_date' => $request->start_date
+            'start_date' => $request->start_date,
+            'priority_id' => $request->priority,
+            'fixed_rate' => $request->fixed_rate,
+            'deadline_date' => $request->deadline_date,
+            'estimated_time' => $request->estimated_time,
+            'spent_time' => $request->spent_time,
+
         ]);
         return redirect(route('tasks.show', $id));
     }

@@ -22,7 +22,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resources([
         '/tasks' => 'TasksController',
-        '/projects' => 'ProjectsController'
+        '/projects' => 'ProjectsController',
+        '/adminPanel' => 'AdminPanelController',
     ]);
 
     Route::post('comments/store','CommentsController@store')->name('comments.store');

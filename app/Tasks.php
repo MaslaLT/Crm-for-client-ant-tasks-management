@@ -29,8 +29,7 @@ class Tasks extends Model
     public function comments()
     {
         return $this->hasMany('App\Comments', 'task_id', 'id')
-            ->orderBy('created_at', 'desc')
-            ->limit(5);
+            ->orderBy('created_at', 'desc');
     }
 
 }

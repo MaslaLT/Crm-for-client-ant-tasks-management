@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Projects;
 use App\User;
 use Illuminate\Support\Facades\Auth;
-//use Spatie\Permission\Traits\HasRoles;
 
 class ProjectsController extends Controller
 {
@@ -87,7 +86,13 @@ class ProjectsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = Auth::user();
+
+        if($user->can('edit project')){
+            $data['project'] = Projects::find($id);
+            $data['clients'] = User::role('client')->get();
+            return view('projects.edit', $data);
+        }
     }
 
     /**
